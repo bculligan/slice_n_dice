@@ -1,0 +1,45 @@
+unit Slice_n_Dice_Splash_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, pngimage, ExtCtrls;
+
+type
+  TSnDSplash = class(TForm)
+    imgSplash: TImage;
+    timerSplash: TTimer;
+    procedure FormShow(Sender: TObject);
+    procedure timerSplashTimer(Sender: TObject);
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    Completed : boolean;
+  end;
+
+var
+  SnDSplash: TSnDSplash;
+
+implementation
+
+{$R *.dfm}
+
+procedure TSnDSplash.FormShow(Sender: TObject);
+begin
+  OnShow := nil;
+  Completed := false;
+  timerSplash.Interval := 3000;
+  timerSplash.Enabled := True;
+
+end;
+
+procedure TSnDSplash.timerSplashTimer(Sender: TObject);
+begin
+  timerSplash.Enabled := false;
+  Completed := true;
+end;
+
+end.

@@ -1,0 +1,53 @@
+unit SnDDependencies_u;
+
+interface
+
+uses
+  Sysutils;
+
+type
+
+  TDependencies = Class(TObject)
+  private
+    iType: integer; // Property
+
+
+  public
+
+    constructor Create(_iType: integer); // Declaration
+
+    procedure SetType(_iType: integer);
+    function CallType: integer;
+
+
+
+  End;
+
+implementation
+
+constructor TDependencies.Create(_iType: integer); // Intilizaize
+begin
+
+  iType := _iType;
+
+end;
+
+
+function TDependencies.CallType: integer;
+begin
+
+  CallType := iType;
+
+end;
+
+procedure TDependencies.SetArray(pArr: array of string);
+begin
+
+end;
+
+procedure TDependencies.SetType(_iType: integer);
+begin
+  iType := _iType;
+end;
+
+end.

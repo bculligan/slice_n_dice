@@ -1,0 +1,145 @@
+unit Unit_Conversions_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, pngimage, ExtCtrls, StdCtrls;
+
+type
+  TConversionTable = class(TForm)
+    pnlMetric: TPanel;
+    pnlImperial: TPanel;
+    lbledtG: TLabeledEdit;
+    lbledtC: TLabeledEdit;
+    lbledtML: TLabeledEdit;
+    lblNote4: TLabel;
+    imgLogo: TImage;
+    lblMetric: TLabel;
+    lblNote1: TLabel;
+    lblNote2: TLabel;
+    lblNote3: TLabel;
+    lblImperial: TLabel;
+    lbledtF: TLabeledEdit;
+    lbledtOZ: TLabeledEdit;
+    lbledtFLOZ: TLabeledEdit;
+    lbledtPOUND: TLabeledEdit;
+    lbledtPINT: TLabeledEdit;
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  ConversionTable: TConversionTable;
+
+implementation
+
+{$R *.dfm}
+
+procedure TConversionTable.FormCreate(Sender: TObject);
+begin
+  lblMetric.Left := (pnlMetric.Width - lblMetric.Width) DIV 2;
+  lblImperial.Left := (pnlImperial.Width - lblImperial.Width) DIV 2;
+  lbledtG.Left := (pnlMetric.Width - lbledtG.Width) DIV 2;
+  lbledtC.Left := (pnlMetric.Width - lbledtC.Width) DIV 2;
+  lbledtML.Left := (pnlMetric.Width - lbledtML.Width) DIV 2;
+end;
+
+(*
+  procedure TConversionTable.lbledtCChange(Sender: TObject);
+  begin
+  try
+  lbledtF.Text := FloatToStrF((StrToFloat(lbledtC.Text) * 1.8 + 32), ffFixed,
+  8, 2);
+  except
+
+  end;
+  end;
+
+  procedure TConversionTable.lbledtFChange(Sender: TObject);
+  begin
+  try
+  lbledtC.Text := FloatToStrF(((StrToFloat(lbledtF.Text) - 32) / 1.8),
+  ffFixed, 8, 2);
+  except
+
+  end;
+  end;
+
+  procedure TConversionTable.lbledtFLOZChange(Sender: TObject);
+  begin
+  try
+  lbledtML.Text := FloatToStrF((StrToFloat(lbledtFLOZ.Text) * 29.57352956),
+  ffFixed, 8, 2);
+  lbledtPINT.Text := FloatToStrF((StrToFloat(lbledtFLOZ.Text) * 16), ffFixed,
+  8, 2);
+  except
+
+  end;
+  end;
+
+  procedure TConversionTable.lbledtGChange(Sender: TObject);
+  begin
+  try
+  lbledtOZ.Text := FloatToStrF((StrToFloat(lbledtG.Text) * 0.03527396),
+  ffFixed, 8, 2);
+  lbledtPOUND.Text := FloatToStrF((StrToFloat(lbledtG.Text) / 453.59237),
+  ffFixed, 8, 2);
+  except
+
+  end;
+  end;
+
+  procedure TConversionTable.lbledtMLChange(Sender: TObject);
+  begin
+  try
+  lbledtFLOZ.Text := FloatToStrF((StrToFloat(lbledtML.Text) * 0.033814),
+  ffFixed, 8, 2);
+  lbledtPINT.Text := FloatToStrF((StrToFloat(lbledtML.Text) * 0.002113),
+  ffFixed, 8, 2);
+  except
+
+  end;
+  end;
+
+  procedure TConversionTable.lbledtOZChange(Sender: TObject);
+  begin
+  try
+  lbledtG.Text := FloatToStrF((StrToFloat(lbledtOZ.Text) * 28.34952313),
+  ffFixed, 8, 2);
+  lbledtPOUND.Text := FloatToStrF((StrToFloat(lbledtOZ.Text) * 0.0625),
+  ffFixed, 8, 2);
+  except
+
+  end;
+  end;
+
+  procedure TConversionTable.lbledtPINTChange(Sender: TObject);
+  begin
+  try
+  lbledtML.Text := FloatToStrF((StrToFloat(lbledtPINT.Text) * 473.176473),
+  ffFixed, 8, 2);
+  lbledtFLOZ.Text := FloatToStrF((StrToFloat(lbledtPINT.Text) / 16), ffFixed,
+  8, 2);
+  except
+
+  end;
+  end;
+
+  procedure TConversionTable.lbledtPOUNDChange(Sender: TObject);
+  begin
+  try
+  lbledtG.Text := FloatToStrF((StrToFloat(lbledtPOUND.Text) * 453.59237),
+  ffFixed, 8, 2);
+  lbledtOZ.Text := FloatToStrF((StrToFloat(lbledtPOUND.Text) * 16), ffFixed,
+  8, 2);
+  except
+
+  end;
+  end;
+*)
+
+end.

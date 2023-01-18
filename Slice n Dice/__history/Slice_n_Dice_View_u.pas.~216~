@@ -1,0 +1,377 @@
+unit Slice_n_Dice_View_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, StdCtrls, jpeg, ComCtrls, DBCtrls, dmSlicenDice_u,
+  Slice_n_Dice_u, Grids, DBGrids, Unit_Conversions_u, Slice_n_Dice_Home_u,
+  StrUtils;
+
+type
+  TSelectedRecipe = class(TForm)
+    lblMealName: TLabel;
+    imgMeal: TImage;
+    pnlViewBase: TPanel;
+    pnlTimerORLogo: TPanel;
+    pnlMethodView: TPanel;
+    lblMethod: TLabel;
+    lblServes: TLabel;
+    lblIngredients: TLabel;
+    btnConversionTable: TButton;
+    btnMealComplete: TButton;
+    btnBack: TButton;
+    memMethod: TMemo;
+    pnlServes: TPanel;
+    pnlIngredients: TPanel;
+    lblCountTimer: TLabel;
+    btnStart: TButton;
+    btnPause: TButton;
+    btnReset: TButton;
+    lblTimer: TLabel;
+    pnlStockANDImage: TPanel;
+    lblStock: TLabel;
+    dbGrdStock: TDBGrid;
+    timTimer: TTimer;
+    memIngredients: TMemo;
+    procedure FormCreate(Sender: TObject);
+    procedure btnMealCompleteClick(Sender: TObject);
+    procedure btnBackClick(Sender: TObject);
+    function CreateTime: string;
+    procedure btnResetClick(Sender: TObject);
+    procedure btnStartClick(Sender: TObject);
+    procedure btnPauseClick(Sender: TObject);
+    procedure timTimerTimer(Sender: TObject);
+    procedure memMethodMouseEnter(Sender: TObject);
+    procedure dbGrdStockMouseEnter(Sender: TObject);
+    procedure btnConversionTableClick(Sender: TObject);
+    procedure memIngredientsMouseEnter(Sender: TObject);
+    procedure dbGrdStockCellClick(Column: TColumn);
+    procedure dbGrdStockColEnter(Sender: TObject);
+    procedure dbGrdStockColExit(Sender: TObject);
+    procedure dbGrdStockDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+  private
+    { Private declarations }
+  var
+    dynLogoIMG: TImage;
+    FOriginalOptions: TDBGridOptions;
+  public
+    { Public declarations }
+  end;
+
+var
+  SelectedRecipe: TSelectedRecipe;
+  bTimerActive: boolean = false;
+  iTime: Integer = 0;
+  bTimerNeeded: boolean = true;
+
+implementation
+
+{$R *.dfm}
+
+procedure TSelectedRecipe.btnBackClick(Sender: TObject);
+var
+  iSelect: Integer;
+begin
+  iSelect := messagedlg(
+    'Are you sure you want to go back?  If you made this meal, please click "Meal Complete" to save meal tracking information', mtConfirmation, mbOKCancel, 0);
+
+  if iSelect = mrOK then // confirm with user about closing form
+  begin
+    SnDRecipes.edtSearch.Text := '';
+    Close;
+  end;
+
+end;
+
+procedure TSelectedRecipe.btnConversionTableClick(Sender: TObject);
+// show conversion table
+begin
+  ConversionTable := TConversionTable.Create(self);
+  try
+    ConversionTable.ShowModal;
+  finally
+    ConversionTable.Free;
+  end;
+end;
+
+procedure TSelectedRecipe.btnMealCompleteClick(Sender: TObject);
+begin
+  ShowMessage('Bon Appétit!'); // tell user that form is closing and enjoy meal
+  SnDRecipes.edtSearch.Text := ''; // clears search bar in viewer
+  with dmSlicenDice do
+  begin
+    tblTrack.Last; // inserts record in database to save tracking information on meals
+    tblTrack.Insert;
+    tblTrack['TrackDate'] := DateToStr(Date);
+    tblTrack['RecID'] := SnDHome.objDependencies.GetSelectedID;
+    tblTrack.Post;
+  end;
+  Close;
+end;
+
+procedure TSelectedRecipe.btnPauseClick(Sender: TObject);
+// pause timer and adjust buttons that are enabled
+begin
+  timTimer.Enabled := false;
+  btnStart.Enabled := true;
+  btnReset.Enabled := true;
+  btnPause.Enabled := false;
+end;
+
+procedure TSelectedRecipe.btnResetClick(Sender: TObject);
+// allows user to change timer value in certain circumstance
+const
+  iSS: Integer = 0;
+
+var
+  iHH, iMM: Integer;
+
+begin
+  try
+    iHH := StrToInt(InputBox('New Timer Value',
+        'Please enter the new hour vlaue (0 - 23)', '0'));
+    iMM := StrToInt(InputBox('New Timer Value',
+        'Please enter the new minute vlaue (0 - 59)', '0'));
+    if (iHH >= 0) AND (iHH < 24) AND (iMM >= 0) AND (iMM < 60) then
+    begin
+      lblCountTimer.Caption := Format('%.2d:%.2d:%.2d', [iHH, iMM, iSS]);
+    end
+    else
+    begin
+      ShowMessage('Please enter a valid hour or minute value');
+    end;
+  except
+    ShowMessage('Please enter a valid hour or minute value');
+  end;
+end;
+
+procedure TSelectedRecipe.btnStartClick(Sender: TObject);
+begin
+  btnPause.Enabled := true;
+  btnStart.Enabled := false;
+  btnReset.Enabled := false;
+  timTimer.Enabled := true;
+end;
+
+function TSelectedRecipe.CreateTime: string;
+const
+  iSS: Integer = 0;
+var
+  iHH, iMM: Integer;
+
+begin
+  if iTime > 0 then
+  begin
+    iHH := iTime DIV 60;
+    iMM := iTime MOD 60;
+    Result := Format('%.2d:%.2d:%.2d', [iHH, iMM, iSS]);
+    bTimerNeeded := true;
+  end
+  else
+  begin
+    bTimerNeeded := false;
+  end;
+end;
+
+procedure TSelectedRecipe.dbGrdStockCellClick(Column: TColumn);
+begin
+  if Column.FieldName = 'IngAvailable' then
+  begin
+    Column.Grid.DataSource.DataSet.Edit;
+    Column.Field.Value := not Column.Field.AsBoolean;
+    Column.Grid.DataSource.DataSet.Post;
+  end;
+end;
+
+procedure TSelectedRecipe.dbGrdStockColEnter(Sender: TObject);
+begin
+  if self.dbGrdStock.SelectedField.FieldName = 'IngAvailable' then
+  begin
+    self.FOriginalOptions := self.dbGrdStock.Options;
+    self.dbGrdStock.Options := self.dbGrdStock.Options - [dgEditing];
+  end;
+end;
+
+procedure TSelectedRecipe.dbGrdStockColExit(Sender: TObject);
+begin
+  if self.dbGrdStock.SelectedField.FieldName = 'IngAvailable' then
+    self.dbGrdStock.Options := self.FOriginalOptions;
+end;
+
+procedure TSelectedRecipe.dbGrdStockDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+const
+  CtrlState: array [boolean] of Integer = (DFCS_BUTTONCHECK,
+    DFCS_BUTTONCHECK or DFCS_CHECKED);
+begin
+  if Column.FieldName = 'IngAvailable' then
+  begin
+    dbGrdStock.Canvas.FillRect(Rect);
+    if (VarIsNull(Column.Field.Value)) then
+      DrawFrameControl(dbGrdStock.Canvas.Handle, Rect, DFC_BUTTON,
+        DFCS_BUTTONCHECK or DFCS_INACTIVE)
+    else
+      DrawFrameControl(dbGrdStock.Canvas.Handle, Rect, DFC_BUTTON,
+        CtrlState[Column.Field.AsBoolean]);
+  end;
+end;
+
+procedure TSelectedRecipe.dbGrdStockMouseEnter(Sender: TObject);
+begin
+  dbGrdStock.SetFocus;
+end;
+
+procedure TSelectedRecipe.FormCreate(Sender: TObject);
+var
+  sIng: string;
+
+begin
+  WindowState := wsMaximized;
+  BorderStyle := bsSizeable;
+  Left := 0;
+  Top := 0;
+  Width := Screen.Width;
+  Height := Screen.Height;
+
+  memMethod.Clear;
+  memIngredients.Clear;
+
+  dmSlicenDice.tblRecipe.Locate('RecID', SnDHome.objDependencies.GetSelectedID,
+    []);
+  lblMealName.Caption := dmSlicenDice.tblRecipe['RecName'];
+  SelectedRecipe.Caption := lblMealName.Caption;
+  imgMeal.Picture.LoadFromFile
+    (ExpandFileName(ExtractFileDir(Application.ExeName))
+      + '/Recipe Images/' + dmSlicenDice.tblRecipe['RecImage']);
+  lblServes.Caption := 'Serves: ' + IntToStr
+    (dmSlicenDice.tblRecipe['RecServe']);
+  memMethod.Lines.Add(dmSlicenDice.tblRecipe['RecMethod']);
+  iTime := StrToInt(dmSlicenDice.tblRecipe['RecTimer']);
+
+  with dmSlicenDice do
+  begin
+    tblRecipeIngredientNeed.Filter :=
+      'RecID = ' + SnDHome.objDependencies.GetSelectedID;
+    tblRecipeIngredientNeed.Filtered := true;
+    tblRecipeIngredientNeed.First;
+    while not tblRecipeIngredientNeed.Eof do
+    begin
+      sIng := tblRecipeIngredientNeed['RecIngNeedText'];
+      memIngredients.Lines.Add(sIng);
+      memIngredients.Lines.Add('');
+      tblRecipeIngredientNeed.Next;
+    end;
+
+    tblIngredient.Sort := 'IngName ASC';
+    tblIngredient.Filter := 'IngAvailable = True';
+    tblIngredient.Filtered := true;
+  end;
+
+  lblCountTimer.Caption := CreateTime;
+
+  pnlMethodView.Width := pnlIngredients.Left -
+    (pnlTimerORLogo.Left + pnlTimerORLogo.Width) - 8;
+  lblMealName.Left := pnlStockANDImage.Left + pnlStockANDImage.Width + 5;
+  lblMealName.Width := btnMealComplete.Left - lblMealName.Left;
+  lblStock.Left := (pnlStockANDImage.Width div 2) - lblStock.Width div 2;
+  dbGrdStock.Columns[0].Width := dbGrdStock.Width - dbGrdStock.Columns[1]
+    .Width - 24;
+  lblTimer.Left := (pnlTimerORLogo.Width div 2) - lblTimer.Width div 2;
+  lblIngredients.Left := (pnlIngredients.Width div 2)
+    - lblIngredients.Width div 2;
+  btnConversionTable.Left := (pnlIngredients.Width div 2)
+    - btnConversionTable.Width div 2;
+  pnlServes.Left := (pnlIngredients.Width div 2) - pnlServes.Width div 2;
+  lblServes.Left := (pnlServes.Width div 2) - lblServes.Width div 2;
+
+  lblCountTimer.Left := (pnlTimerORLogo.Width div 2)
+    - lblCountTimer.Width div 2;
+  btnPause.Left := (pnlTimerORLogo.Width div 2) - btnPause.Width div 2;
+  btnReset.Left := btnPause.Left + btnPause.Width + 5;
+  btnStart.Left := btnPause.Left - btnStart.Width - 5;
+
+  if bTimerNeeded = false then
+  begin
+    dynLogoIMG := TImage.Create(self); // Create logo image to display in empty timer slot
+    dynLogoIMG.Parent := pnlTimerORLogo;
+    dynLogoIMG.Name := 'imgLogo';
+    dynLogoIMG.Height := pnlTimerORLogo.Height;
+    dynLogoIMG.Width := pnlTimerORLogo.Width;
+    dynLogoIMG.Left := pnlTimerORLogo.Left;
+    dynLogoIMG.Top := pnlTimerORLogo.Top;
+    dynLogoIMG.Picture.LoadFromFile('TimerReplace.png');
+
+    btnStart.Visible := false;
+    btnPause.Visible := false;
+    btnReset.Visible := false;
+  end;
+end;
+
+procedure TSelectedRecipe.memIngredientsMouseEnter(Sender: TObject);
+begin
+  memIngredients.SetFocus;
+end;
+
+procedure TSelectedRecipe.memMethodMouseEnter(Sender: TObject);
+begin
+  memMethod.SetFocus;
+end;
+
+procedure TSelectedRecipe.timTimerTimer(Sender: TObject);
+var
+  iTimerSS, iTimerMM, iTimerHH: Integer;
+  bTimerDone: boolean;
+begin
+  bTimerDone := false;
+  iTimerHH := StrToInt(Copy(lblCountTimer.Caption, 1, 2));
+  iTimerMM := StrToInt(Copy(lblCountTimer.Caption, 4, 2));
+  iTimerSS := StrToInt(Copy(lblCountTimer.Caption, 7, 2));
+
+  if iTimerSS = 0 then
+  begin
+    if iTimerMM = 0 then
+    begin
+      if iTimerHH > 0 then
+      begin
+        Dec(iTimerHH);
+        iTimerMM := 59;
+        iTimerSS := 59;
+        lblCountTimer.Caption := Format('%.2d:%.2d:%.2d', [iTimerHH, iTimerMM,
+          iTimerSS]);
+      end
+      else
+      begin
+        bTimerDone := true;
+      end;
+    end
+    else
+    begin
+      Dec(iTimerMM);
+      iTimerSS := 59;
+      lblCountTimer.Caption := Format('%.2d:%.2d:%.2d', [iTimerHH, iTimerMM,
+        iTimerSS]);
+    end;
+  end
+  else
+  begin
+    Dec(iTimerSS);
+    lblCountTimer.Caption := Format('%.2d:%.2d:%.2d', [iTimerHH, iTimerMM,
+      iTimerSS]);
+  end;
+
+  if bTimerDone = true then
+  begin
+    timTimer.Enabled := false;
+    Windows.beep(1500, 200);
+    Windows.beep(2000, 200);
+    Windows.beep(2000, 600);
+    ShowMessage('Timer has ended!');
+    btnStart.Enabled := true;
+    btnReset.Enabled := true;
+    btnPause.Enabled := false;
+  end;
+end;
+
+end.

@@ -1,0 +1,24 @@
+unit Add_Ingredient_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs;
+
+type
+  TAddIngredient = class(TForm)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  AddIngredient: TAddIngredient;
+
+implementation
+
+{$R *.dfm}
+
+end.

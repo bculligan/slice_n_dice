@@ -1,0 +1,167 @@
+unit Pie_Charts_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, TeEngine, ExtCtrls, TeeProcs, Chart, DBChart, dmSlicenDice_u,
+  Series, Slice_n_Dice_Home_u, StrUtils;
+
+type
+  TPieCharts = class(TForm)
+    dbChrtGoal: TDBChart;
+    Series1: TPieSeries;
+    dbChrtAchievement: TDBChart;
+    Series2: TPieSeries;
+    Image1: TImage;
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  PieCharts: TPieCharts;
+  arrRecID: array of string;
+  arrIngredients: array of string;
+  arrTypeCount: array [0 .. 7] of integer = (
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  );
+  arrColours: array [0 .. 7] of TColor = (
+    clWebGold,
+    clWebOrange,
+    clWebSalmon,
+    clWebMistyRose,
+    clWebMediumOrchid,
+    clWebLavender,
+    clWebCornSilk,
+    clWebMediumSpringGreen
+  );
+  arrLabels: array [0 .. 7] of string = (
+    'Carbohydrates',
+    'Dairy',
+    'Fats, Oils and Sugar',
+    'Fruit and Vegetables',
+    'Herbs and Spice',
+    'Meat',
+    'Nuts and Seeds',
+    'Other'
+  );
+
+implementation
+
+{$R *.dfm}
+
+procedure TPieCharts.FormCreate(Sender: TObject);
+var
+  q, w, iCount: integer;
+
+begin
+  dbChrtAchievement.Show;
+
+  SetLength(arrRecID, 1);
+  SetLength(arrIngredients, 1);
+
+  with dmSlicenDice do
+  begin
+    tblFillRecIDArray.Filter :=
+      'TrackDate >= ' + SnDHome.objDependencies.GetFromDate +
+      ' AND TrackDate <=' + SnDHome.objDependencies.GetToDate;
+    tblFillRecIDArray.Filtered := True;
+
+    tblFillRecIDArray.First;
+    while NOT tblFillRecIDArray.EOF do
+    begin
+      arrRecID[length(arrRecID) - 1] := tblFillRecIDArray['RecID'];
+      tblFillRecIDArray.Next;
+      SetLength(arrRecID, length(arrRecID) + 1);
+    end;
+
+    for q := low(arrRecID) to high(arrRecID) - 1 do
+    begin
+      tblFillIngredientArray.Filter := 'RecID = ' + arrRecID[q];
+      tblFillIngredientArray.Filtered := True;
+      tblFillIngredientArray.First;
+      while NOT tblFillIngredientArray.EOF do
+      begin
+        arrIngredients[length(arrIngredients) - 1] := tblFillIngredientArray
+          ['RecIngNeedText'];
+        tblFillIngredientArray.Next;
+        SetLength(arrIngredients, length(arrIngredients) + 1);
+      end;
+    end;
+
+    for w := low(arrIngredients) to high(arrIngredients) - 1 do
+    begin
+      tblCheckIngredient.First;
+      while NOT tblCheckIngredient.EOF do
+      begin
+        if ContainsText(arrIngredients[w], tblCheckIngredient['IngName']) then
+        begin
+          if tblCheckIngredient['IngType'] = 'Carbohydrates' then
+          begin
+            arrTypeCount[0] := arrTypeCount[0] + 1;
+          end
+          else if tblCheckIngredient['IngType'] = 'Dairy' then
+          begin
+            arrTypeCount[1] := arrTypeCount[1] + 1;
+          end
+          else if tblCheckIngredient['IngType'] = 'Fats, Oils and Sugar' then
+          begin
+            arrTypeCount[2] := arrTypeCount[2] + 1;
+          end
+          else if tblCheckIngredient['IngType'] = 'Fruit and Vegetables' then
+          begin
+            arrTypeCount[3] := arrTypeCount[3] + 1;
+          end
+          else if tblCheckIngredient['IngType'] = 'Herbs and Spices' then
+          begin
+            arrTypeCount[4] := arrTypeCount[4] + 1;
+          end
+          else if tblCheckIngredient['IngType'] = 'Meat' then
+          begin
+            arrTypeCount[5] := arrTypeCount[5] + 1;
+          end
+          else if tblCheckIngredient['IngType'] = 'Nuts and Seeds' then
+          begin
+            arrTypeCount[6] := arrTypeCount[6] + 1;
+          end
+          else if tblCheckIngredient['IngType'] = 'Other' then
+          begin
+            arrTypeCount[7] := arrTypeCount[7] + 1;
+          end;
+        end;
+        tblCheckIngredient.Next;
+      end;
+    end;
+  end;
+
+  if NOT((arrTypeCount[0] = 0) AND (arrTypeCount[1] = 0) AND
+      (arrTypeCount[2] = 0) AND (arrTypeCount[3] = 0) AND
+      (arrTypeCount[4] = 0) AND (arrTypeCount[5] = 0) AND
+      (arrTypeCount[6] = 0) AND (arrTypeCount[7] = 0)) then
+  begin
+    with dbChrtAchievement do
+    begin
+      Series2.Clear;
+      for iCount := 0 to 7 do
+        Series2.AddPie(arrTypeCount[iCount], arrLabels[iCount],
+          arrColours[iCount]);
+      dbChrtAchievement.AddSeries(Series2);
+    end;
+  end
+  else
+  begin
+    dbChrtAchievement.Hide;
+  end;
+end;
+
+end.

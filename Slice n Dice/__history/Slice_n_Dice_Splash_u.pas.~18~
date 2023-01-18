@@ -1,0 +1,27 @@
+unit Slice_n_Dice_Splash_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, pngimage, ExtCtrls;
+
+type
+  TSnDSplash = class(TForm)
+    imgSplash: TImage;
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    Completed : boolean;
+  end;
+
+var
+  SnDSplash: TSnDSplash;
+
+implementation
+
+{$R *.dfm}
+
+end.

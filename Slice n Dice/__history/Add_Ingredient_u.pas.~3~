@@ -1,0 +1,30 @@
+unit Add_Ingredient_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, StdCtrls, pngimage;
+
+type
+  TbtnAddIngredient = class(TForm)
+    lbledtIngName: TLabeledEdit;
+    cmbxIngType: TComboBox;
+    Button1: TButton;
+    lblIngType: TLabel;
+    lblNote: TLabel;
+    imgLogo: TImage;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  btnAddIngredient: TbtnAddIngredient;
+
+implementation
+
+{$R *.dfm}
+
+end.

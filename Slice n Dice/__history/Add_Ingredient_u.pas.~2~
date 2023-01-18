@@ -1,0 +1,30 @@
+unit Add_Ingredient_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, StdCtrls;
+
+type
+  TAddIngredient = class(TForm)
+    LabeledEdit1: TLabeledEdit;
+    ComboBox1: TComboBox;
+    Button1: TButton;
+    Label1: TLabel;
+    Label2: TLabel;
+    Image1: TImage;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  AddIngredient: TAddIngredient;
+
+implementation
+
+{$R *.dfm}
+
+end.

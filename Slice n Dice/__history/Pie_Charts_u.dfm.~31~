@@ -1,0 +1,142 @@
+object PieCharts: TPieCharts
+  Left = 0
+  Top = 0
+  BorderStyle = bsDialog
+  Caption = 'Pie Charts'
+  ClientHeight = 535
+  ClientWidth = 914
+  Color = clWhite
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object dbChrtGoal: TDBChart
+    Left = 0
+    Top = 0
+    Width = 460
+    Height = 545
+    Hint = 'Dietary Goal'
+    AllowPanning = pmNone
+    Title.Font.Color = clBlack
+    Title.Font.Height = -19
+    Title.Font.Style = [fsBold, fsUnderline]
+    Title.Text.Strings = (
+      'Dietary Goal')
+    Legend.Alignment = laBottom
+    Legend.TextStyle = ltsLeftPercent
+    Legend.Title.Text.Strings = (
+      'Dietary Amounts')
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    Zoom.Allow = False
+    Color = clWhite
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    PrintMargins = (
+      27
+      15
+      27
+      15)
+    ColorPaletteIndex = 7
+    object Series1: TPieSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Callout.ArrowHeadSize = -2
+      Marks.Callout.Length = 4
+      Marks.BackColor = clWhite
+      Marks.Color = clWhite
+      Marks.MultiLine = True
+      Marks.Shadow.Color = 8618883
+      Marks.Style = smsLabelPercent
+      Marks.Symbol.Visible = True
+      Marks.Visible = False
+      DataSource = dmSlicenDice.tblDietaryGoal
+      Title = 'PieGoal'
+      XLabelsSource = 'DGoalType'
+      Circled = True
+      Gradient.Direction = gdRadial
+      MultiPie = mpDisabled
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      PieValues.ValueSource = 'DGoalPercent'
+    end
+  end
+  object dbChrtAchievement: TDBChart
+    Left = 456
+    Top = 0
+    Width = 460
+    Height = 545
+    Hint = 'Dietary Achievement Based on Selected Meals'
+    AllowPanning = pmNone
+    Title.Font.Color = clBlack
+    Title.Font.Height = -19
+    Title.Font.Style = [fsBold, fsUnderline]
+    Title.Text.Strings = (
+      'Dietary Achievement')
+    Legend.Alignment = laBottom
+    Legend.TextStyle = ltsLeftPercent
+    Legend.Title.Text.Strings = (
+      'Dietary Amounts')
+    View3D = False
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    Zoom.Allow = False
+    Color = clWhite
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    PrintMargins = (
+      28
+      15
+      28
+      15)
+    ColorPaletteIndex = 7
+    object Image1: TImage
+      Left = 24
+      Top = 24
+      Width = 105
+      Height = 105
+    end
+    object Series2: TPieSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Callout.ArrowHeadSize = -2
+      Marks.Callout.Length = 4
+      Marks.BackColor = clWhite
+      Marks.Color = clWhite
+      Marks.MultiLine = True
+      Marks.Shadow.Color = 8684676
+      Marks.Style = smsLabelPercent
+      Marks.Symbol.Visible = True
+      Marks.Visible = False
+      PercentFormat = '##0 %'
+      Circled = True
+      Gradient.Direction = gdRadial
+      MultiPie = mpDisabled
+      OtherSlice.Legend.Visible = False
+      PieValues.Name = 'Pie'
+      PieValues.Order = loNone
+      Data = {
+        04080000000000000000788C40FF04000000436172730000000000A08740FF06
+        00000050686F6E65730000000000807040FF060000005461626C657300000000
+        00C07D40FF080000004D6F6E69746F72730000000000607740FF050000004C61
+        6D70730000000000E08940FF090000004B6579626F617264730000000000A88D
+        40FF0500000042696B65730000000000C06840FF06000000436861697273}
+    end
+  end
+end

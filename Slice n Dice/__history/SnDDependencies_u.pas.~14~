@@ -1,0 +1,88 @@
+unit SnDDependencies_u;
+
+interface
+
+uses
+  Sysutils;
+
+type
+  TDependencies = Class(TObject)
+  private
+    SelectedID: string;
+    MealType: string;
+    AddOREdit: String;
+    FromDate: string;
+    ToDate: string;
+  public
+    constructor Create;
+    procedure SetSelectedID(pID: String);
+    function GetSelectedID: string;
+    procedure SetMealType(pType: string);
+    function GetMealType: string;
+    procedure SetAddOREdit(pAddOREdit: string);
+    function GetAddOREdit: string;
+    procedure SetFromDate(pFromDate: string);
+    function GetFromDate: String;
+    procedure SetToDate(pToDate: String);
+    function GetToDate: string;
+  End;
+
+implementation
+
+constructor TDependencies.Create;
+begin
+  SelectedID := '';
+  MealType := '';
+end;
+
+function TDependencies.GetAddOREdit: string;
+begin
+  result := AddOREdit;
+end;
+
+function TDependencies.GetFromDate: String;
+begin
+  result := FromDate;
+end;
+
+function TDependencies.GetMealType: string;
+begin
+  result := MealType;
+end;
+
+function TDependencies.GetSelectedID: string;
+begin
+  result := SelectedID;
+end;
+
+function TDependencies.GetToDate: string;
+begin
+  result := ToDate;
+end;
+
+procedure TDependencies.SetAddOREdit(pAddOREdit: string);
+begin
+  AddOREdit := pAddOREdit;
+end;
+
+procedure TDependencies.SetFromDate(pFromDate: string);
+begin
+  FromDate := pFromDate;
+end;
+
+procedure TDependencies.SetMealType(pType: string);
+begin
+  MealType := pType;
+end;
+
+procedure TDependencies.SetSelectedID(pID: String);
+begin
+  SelectedID := pID;
+end;
+
+procedure TDependencies.SetToDate(pToDate: String);
+begin
+  ToDate := pToDate;
+end;
+
+end.

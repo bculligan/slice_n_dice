@@ -1,0 +1,422 @@
+unit Slice_n_Dice_Analytics_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ComCtrls, ExtCtrls, pngimage, ExtDlgs, dmSlicenDice_u,
+  Pie_Charts_u, Buttons, SnDDependencies_u, Slice_n_Dice_Home_u;
+
+type
+  TSnDAnalytics = class(TForm)
+    pnlAnalytics: TPanel;
+    redBreakfast: TRichEdit;
+    redDessert: TRichEdit;
+    redDinner: TRichEdit;
+    redDrinks: TRichEdit;
+    redLunch: TRichEdit;
+    pnlCalAnalytics: TPanel;
+    btnView: TButton;
+    btnClear: TButton;
+    btnSave: TButton;
+    btnHome: TButton;
+    imgLogo: TImage;
+    dlgSaveTxtFileAnalytics: TSaveTextFileDialog;
+    dtpFrom: TDateTimePicker;
+    dtpTo: TDateTimePicker;
+    lblFrom: TLabel;
+    lblTo: TLabel;
+    btnGraphs: TButton;
+    pnlGoalOptions: TPanel;
+    lbledtFV: TLabeledEdit;
+    lbledtFOS: TLabeledEdit;
+    lbledtCarbohydrates: TLabeledEdit;
+    lbledtDairy: TLabeledEdit;
+    lbledtNS: TLabeledEdit;
+    lbledtHS: TLabeledEdit;
+    lbledtOther: TLabeledEdit;
+    lbledtMeat: TLabeledEdit;
+    lblDietaryGoalHeading: TLabel;
+    btnUpdate: TButton;
+    lbledtTotal: TLabeledEdit;
+    procedure AnalyticsHeadings;
+    procedure ClearAnalytics;
+    procedure btnClearClick(Sender: TObject);
+    procedure btnSaveClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btnHomeClick(Sender: TObject);
+    procedure btnViewClick(Sender: TObject);
+    procedure ViewAnalytics(pRecType: string; pRed: TRichEdit);
+    procedure dtpToChange(Sender: TObject);
+    procedure dtpFromChange(Sender: TObject);
+    procedure ValidateToFrom;
+    procedure btnGraphsClick(Sender: TObject);
+    procedure btnUpdateClick(Sender: TObject);
+    procedure UpdateTotal(p: integer; pGoalEdit: TLabeledEdit);
+    procedure lbledtCarbohydratesExit(Sender: TObject);
+    procedure lbledtDairyExit(Sender: TObject);
+    procedure lbledtFOSExit(Sender: TObject);
+    procedure lbledtFVExit(Sender: TObject);
+    procedure lbledtHSExit(Sender: TObject);
+    procedure lbledtMeatExit(Sender: TObject);
+    procedure lbledtNSExit(Sender: TObject);
+    procedure lbledtOtherExit(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  SnDAnalytics: TSnDAnalytics;
+  arrGoal: array [0 .. 7] of string;
+  bSettingAllowed: Boolean = false;
+
+implementation
+
+procedure TSnDAnalytics.AnalyticsHeadings; // set as separate procedure to call when clearing the richedits later as well as setting the headings at application start up
+begin
+  redBreakfast.Lines.Add('Breakfast');
+  redBreakfast.SelStart := 0; // get start of this richedit's heading
+  redBreakfast.SelLength := 9; // end of richedit is constant because heading is constant
+  redBreakfast.SelAttributes.Style := redBreakfast.SelAttributes.Style +
+    [fsBold] + [fsUnderline]; // make heading formatted bold and underlined and repeat this process for the rest of the richedits on this tab
+  redLunch.Lines.Add('Lunch');
+  redLunch.SelStart := 0;
+  redLunch.SelLength := 5;
+  redLunch.SelAttributes.Style := redLunch.SelAttributes.Style + [fsBold] +
+    [fsUnderline];
+  redDinner.Lines.Add('Dinner');
+  redDinner.SelStart := 0;
+  redDinner.SelLength := 6;
+  redDinner.SelAttributes.Style := redDinner.SelAttributes.Style + [fsBold] +
+    [fsUnderline];
+  redDessert.Lines.Add('Dessert');
+  redDessert.SelStart := 0;
+  redDessert.SelLength := 7;
+  redDessert.SelAttributes.Style := redDessert.SelAttributes.Style + [fsBold] +
+    [fsUnderline];
+  redDrinks.Lines.Add('Drinks');
+  redDrinks.SelStart := 0;
+  redDrinks.SelLength := 6;
+  redDrinks.SelAttributes.Style := redDrinks.SelAttributes.Style + [fsBold] +
+    [fsUnderline];
+end;
+
+procedure TSnDAnalytics.btnClearClick(Sender: TObject);
+// clear richedits and rewrite their appropriate headings
+begin
+  ClearAnalytics;
+  AnalyticsHeadings;
+end;
+
+procedure TSnDAnalytics.btnGraphsClick(Sender: TObject);
+// open pie chart form
+begin
+  PieCharts := TPieCharts.Create(self);
+  try
+    PieCharts.ShowModal;
+  finally
+    PieCharts.Free;
+  end;
+end;
+
+procedure TSnDAnalytics.btnHomeClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TSnDAnalytics.btnSaveClick(Sender: TObject);
+var
+  tAnalytics: TextFile;
+  sDate: string;
+
+begin
+  dlgSaveTxtFileAnalytics.Filter := 'Text file|*.txt';
+  dlgSaveTxtFileAnalytics.DefaultExt := 'txt';
+
+  sDate := FormatDateTime('yyyymmdd', Now);
+  dlgSaveTxtFileAnalytics.FileName := 'Analytics ' + sDate; // set default textfile name based on current date and Analytics
+
+  if dlgSaveTxtFileAnalytics.Execute then
+  begin
+    try
+      redBreakfast.PlainText := true; // set to plaintext format for saving textfile
+      redLunch.PlainText := true;
+      redDinner.PlainText := true;
+      redDessert.PlainText := true;
+      redDrinks.PlainText := true;
+
+      AssignFile(tAnalytics, dlgSaveTxtFileAnalytics.FileName);
+      Rewrite(tAnalytics); // clear textfile
+      Writeln(tAnalytics, redBreakfast.Text); // write richedit contents with spacing between each meal type for legibility
+      Writeln(tAnalytics, '');
+      Writeln(tAnalytics, redLunch.Text);
+      Writeln(tAnalytics, '');
+      Writeln(tAnalytics, redDinner.Text);
+      Writeln(tAnalytics, '');
+      Writeln(tAnalytics, redDessert.Text);
+      Writeln(tAnalytics, '');
+      Writeln(tAnalytics, redDrinks.Text);
+
+      CloseFile(tAnalytics);
+
+      redBreakfast.PlainText := false; // change back to formatted text
+      redLunch.PlainText := false;
+      redDinner.PlainText := false;
+      redDessert.PlainText := false;
+      redDrinks.PlainText := false;
+
+      ShowMessage('File has successfully been saved');
+      // tell user that save was successful
+    Except
+      ShowMessage('File save was cancelled');
+      // warn user that save occured an error
+    end;
+  end;
+end;
+
+procedure TSnDAnalytics.btnUpdateClick(Sender: TObject);
+// update goal values in database for diet
+var
+  k: integer;
+
+begin
+  if lbledtTotal.Text = '100' then // only allows values to be update if they are given as a percentage which adds up to 100
+  begin
+    arrGoal[0] := lbledtCarbohydrates.Text; // assigns the user goal numbers to arrGoal
+    arrGoal[1] := lbledtDairy.Text;
+    arrGoal[2] := lbledtFOS.Text;
+    arrGoal[3] := lbledtFV.Text;
+    arrGoal[4] := lbledtHS.Text;
+    arrGoal[5] := lbledtMeat.Text;
+    arrGoal[6] := lbledtNS.Text;
+    arrGoal[7] := lbledtOther.Text;
+
+    with dmSlicenDice do // updates the database with these goal values in array
+    begin
+      tblDietaryGoal.First;
+      for k := 0 to 7 do
+      begin
+        tblDietaryGoal.Edit;
+        tblDietaryGoal['DGoalPercent'] := arrGoal[k];
+        tblDietaryGoal.Next;
+      end;
+
+      tblDietaryGoal.Refresh; // refreshes the table for Delphi application
+    end;
+    ShowMessage('Dietary goal has been updated');
+    // tells user that update was successful
+  end
+  else
+    ShowMessage('Please ensure the total field equals 100');
+end;
+
+procedure TSnDAnalytics.btnViewClick(Sender: TObject);
+begin
+  btnClearClick(btnClear); // Remove current viewing before adding the new viewing
+  ViewAnalytics('Breakfast', redBreakfast);
+  ViewAnalytics('Lunch', redLunch);
+  ViewAnalytics('Dinner', redDinner);
+  ViewAnalytics('Dessert', redDessert);
+  ViewAnalytics('Drinks', redDrinks);
+end;
+
+procedure TSnDAnalytics.ClearAnalytics;
+begin
+  redBreakfast.Lines.Clear; // clear all richedits
+  redLunch.Lines.Clear;
+  redDinner.Lines.Clear;
+  redDessert.Lines.Clear;
+  redDrinks.Lines.Clear;
+end;
+
+procedure TSnDAnalytics.dtpFromChange(Sender: TObject);
+begin
+  ValidateToFrom; // checks that values are possible for a to and from date range
+
+  if bSettingAllowed = true then
+    SnDHome.objDependencies.SetFromDate(DateToStr(dtpFrom.Date));
+  // update dependencies unit for date use in graph form
+
+end;
+
+procedure TSnDAnalytics.dtpToChange(Sender: TObject);
+begin
+  ValidateToFrom;
+
+  if bSettingAllowed = true then
+    SnDHome.objDependencies.SetToDate(DateToStr(dtpTo.Date + 1));
+
+end;
+{$R *.dfm}
+
+procedure TSnDAnalytics.FormCreate(Sender: TObject);
+var
+  k: integer;
+
+begin
+  redBreakfast.Width := (Screen.Width - 300) DIV 5; // 300 is constant for pnlCalAnalytics plus spacing
+  // set position of first richedit
+  redLunch.Width := (Screen.Width - 300) DIV 5;
+  redLunch.Left := redBreakfast.Left + redBreakfast.Width + 5; // set left position of next richedit based on width of previous richedit and repeat this pattern for the remaining richedits
+  redDinner.Width := (Screen.Width - 300) DIV 5;
+  redDinner.Left := redLunch.Left + redLunch.Width + 5;
+  redDessert.Width := (Screen.Width - 300) DIV 5;
+  redDessert.Left := redDinner.Left + redDinner.Width + 5;
+  redDrinks.Width := (Screen.Width - 300) DIV 5;
+  redDrinks.Left := redDessert.Left + redDessert.Width + 5;
+
+  AnalyticsHeadings; // write headings to the richedits
+
+  dtpFrom.Date := Now; // Set datetimepickers to current date
+  dtpTo.Date := Now;
+  dtpFrom.MaxDate := Now; // Limit to not choosing a date beyond 'today'
+  dtpTo.MaxDate := Now;
+
+  with dmSlicenDice do
+  begin
+    tblDietaryGoal.First;
+    for k := 0 to 7 do
+    begin
+      arrGoal[k] := tblDietaryGoal['DGoalPercent'];
+      tblDietaryGoal.Next;
+    end;
+  end;
+
+  lbledtCarbohydrates.Text := arrGoal[0];
+  lbledtDairy.Text := arrGoal[1];
+  lbledtFOS.Text := arrGoal[2];
+  lbledtFV.Text := arrGoal[3];
+  lbledtHS.Text := arrGoal[4];
+  lbledtMeat.Text := arrGoal[5];
+  lbledtNS.Text := arrGoal[6];
+  lbledtOther.Text := arrGoal[7];
+
+  ValidateToFrom;
+
+  SnDHome.objDependencies.SetFromDate(DateToStr(dtpFrom.Date));
+  SnDHome.objDependencies.SetToDate(DateToStr(dtpTo.Date + 1));
+end;
+
+procedure TSnDAnalytics.lbledtCarbohydratesExit(Sender: TObject);
+begin
+  UpdateTotal(0, lbledtCarbohydrates);
+end;
+
+procedure TSnDAnalytics.lbledtDairyExit(Sender: TObject);
+begin
+  UpdateTotal(1, lbledtDairy);
+end;
+
+procedure TSnDAnalytics.lbledtFOSExit(Sender: TObject);
+begin
+  UpdateTotal(2, lbledtFOS);
+end;
+
+procedure TSnDAnalytics.lbledtFVExit(Sender: TObject);
+begin
+  UpdateTotal(3, lbledtFV);
+end;
+
+procedure TSnDAnalytics.lbledtHSExit(Sender: TObject);
+begin
+  UpdateTotal(4, lbledtHS);
+end;
+
+procedure TSnDAnalytics.lbledtMeatExit(Sender: TObject);
+begin
+  UpdateTotal(5, lbledtMeat);
+end;
+
+procedure TSnDAnalytics.lbledtNSExit(Sender: TObject);
+begin
+  UpdateTotal(6, lbledtNS);
+end;
+
+procedure TSnDAnalytics.lbledtOtherExit(Sender: TObject);
+begin
+  UpdateTotal(7, lbledtOther);
+end;
+
+procedure TSnDAnalytics.UpdateTotal(p: integer; pGoalEdit: TLabeledEdit);
+var
+  iTotal: integer;
+
+begin
+  if lbledtFV.Text = '' then
+    lbledtFV.Text := '0';
+  if lbledtFOS.Text = '' then
+    lbledtFOS.Text := '0';
+  if lbledtCarbohydrates.Text = '' then
+    lbledtCarbohydrates.Text := '0';
+  if lbledtDairy.Text = '' then
+    lbledtDairy.Text := '0';
+  if lbledtNS.Text = '' then
+    lbledtNS.Text := '0';
+  if lbledtHS.Text = '' then
+    lbledtHS.Text := '0';
+  if lbledtOther.Text = '' then
+    lbledtOther.Text := '0';
+  if lbledtMeat.Text = '' then
+    lbledtMeat.Text := '0';
+
+  iTotal := StrToInt(lbledtFV.Text) + StrToInt(lbledtFOS.Text) + StrToInt
+    (lbledtCarbohydrates.Text) + StrToInt(lbledtDairy.Text) + StrToInt
+    (lbledtNS.Text) + StrToInt(lbledtHS.Text) + StrToInt
+    (lbledtOther.Text) + StrToInt(lbledtMeat.Text);
+
+  arrGoal[p] := pGoalEdit.Text;
+
+  lbledtTotal.Text := IntToStr(iTotal);
+end;
+
+procedure TSnDAnalytics.ValidateToFrom;
+begin
+  bSettingAllowed := false;
+  btnView.Enabled := false;
+  btnGraphs.Enabled := false;
+
+  if dtpTo.Date < dtpFrom.Date then
+  begin
+    messagedlg('"To" date is earlier than "From" date!', mtError, [mbOK], 0);
+  end
+  else
+  begin
+    bSettingAllowed := true;
+    btnView.Enabled := true;
+    btnGraphs.Enabled := true;
+  end;
+end;
+
+procedure TSnDAnalytics.ViewAnalytics(pRecType: string; pRed: TRichEdit);
+begin
+  with dmSlicenDice do
+  begin
+    qryAnalytics.SQL.Clear;
+    qryAnalytics.SQL.Add('SELECT tblRecipe.RecName, tblTrack.TrackDate');
+    qryAnalytics.SQL.Add(
+      'FROM tblRecipe INNER JOIN tblTrack ON tblRecipe.RecID = tblTrack.RecID');
+    qryAnalytics.SQL.Add('WHERE tblRecipe.RecType = "' + pRecType +
+        '" AND tblTrack.TrackDate BETWEEN #' + DateToStr(dtpFrom.Date)
+        + '# AND #' + DateToStr(dtpTo.Date + 1) + '#');
+    qryAnalytics.SQL.Add('ORDER BY tblTrack.TrackDate DESC;');
+
+    qryAnalytics.ExecSQL;
+
+    qryAnalytics.Open;
+
+    While NOT qryAnalytics.Eof do
+    begin
+      pRed.Lines.Add('');
+      pRed.Lines.Add(FormatDateTime('dd/mm/yyyy', qryAnalytics['TrackDate']));
+      // Don't show time values
+      pRed.Lines.Add(qryAnalytics['RecName']);
+      qryAnalytics.Next;
+    end;
+
+    qryAnalytics.Close;
+  end;
+end;
+
+end.

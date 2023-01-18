@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2018/02/24 15:56:50.568.pas,C:\Users\Bradley\Documents\RAD Studio\Projects\Unit1.pas=D:\Slice 'n Dice\Slice_n_Dice_u.pas</Transaction>
+    <Transaction>2018/02/24 15:56:50.568.dfm,C:\Users\Bradley\Documents\RAD Studio\Projects\Unit1.dfm=D:\Slice 'n Dice\Slice_n_Dice_u.dfm</Transaction>
+    <Transaction>2018/02/24 15:56:57.485.dproj,C:\Users\Bradley\Documents\RAD Studio\Projects\Project1.dproj=D:\Slice 'n Dice\Slice_n_Dice_p.dproj</Transaction>
+    <Transaction>2018/03/07 22:31:18.888.pas,E:\Slice 'n Dice\Unit1.pas=E:\Slice 'n Dice\Slice_n_Dice_Splash_u.pas</Transaction>
+    <Transaction>2018/03/07 22:31:18.888.dfm,E:\Slice 'n Dice\Unit1.dfm=E:\Slice 'n Dice\Slice_n_Dice_Splash_u.dfm</Transaction>
+    <Transaction>2018/03/08 00:09:54.042.pas,E:\Slice 'n Dice\Unit3.pas=E:\Slice 'n Dice\Slice_n_Dice_Add_u.pas</Transaction>
+    <Transaction>2018/03/08 00:09:54.042.dfm,E:\Slice 'n Dice\Unit3.dfm=E:\Slice 'n Dice\Slice_n_Dice_Add_u.dfm</Transaction>
+    <Transaction>2018/03/08 00:10:10.566.pas,E:\Slice 'n Dice\Unit2.pas=E:\Slice 'n Dice\Slice_n_Dice_Edit_u.pas</Transaction>
+    <Transaction>2018/03/08 00:10:10.566.dfm,E:\Slice 'n Dice\Unit2.dfm=E:\Slice 'n Dice\Slice_n_Dice_Edit_u.dfm</Transaction>
+    <Transaction>2018/03/08 00:10:18.743.pas,E:\Slice 'n Dice\Unit1.pas=E:\Slice 'n Dice\Slice_n_Dice_View_u.pas</Transaction>
+    <Transaction>2018/03/08 00:10:18.743.dfm,E:\Slice 'n Dice\Unit1.dfm=E:\Slice 'n Dice\Slice_n_Dice_View_u.dfm</Transaction>
+    <Transaction>2018/03/26 15:11:49.881.pas,E:\Slice 'n Dice\Unit1.pas=E:\Slice 'n Dice\SnDDependencies_u.pas</Transaction>
+    <Transaction>2018/04/05 15:35:13.385.pas,E:\++Slice 'n Dice + Dependencies unit++\Unit1.pas=E:\++Slice 'n Dice + Dependencies unit++\dmSlicenDice_u.pas</Transaction>
+    <Transaction>2018/04/05 15:35:13.385.dfm,E:\++Slice 'n Dice + Dependencies unit++\Unit1.dfm=E:\++Slice 'n Dice + Dependencies unit++\dmSlicenDice_u.dfm</Transaction>
+    <Transaction>2018/04/16 15:29:48.266.pas,E:\++Slice 'n Dice + Dependencies unit++\Unit1.pas=E:\++Slice 'n Dice + Dependencies unit++\FormFormatting_u.pas</Transaction>
+    <Transaction>2018/04/16 15:38:16.970.pas,E:\++Slice 'n Dice + Dependencies unit++\FormFormatting_u.pas=</Transaction>
+    <Transaction>2018/06/12 15:36:41.941.pas,E:\Slice n Dice\Unit1.pas=E:\Slice n Dice\Slice_n_Dice_Home_u.pas</Transaction>
+    <Transaction>2018/06/12 15:36:41.941.dfm,E:\Slice n Dice\Unit1.dfm=E:\Slice n Dice\Slice_n_Dice_Home_u.dfm</Transaction>
+    <Transaction>2018/06/20 08:50:15.736.pas,E:\Slice n Dice\Unit2.pas=E:\Slice n Dice\Slice_n_Dice_Analytics_u.pas</Transaction>
+    <Transaction>2018/06/20 08:50:15.736.dfm,E:\Slice n Dice\Unit2.dfm=E:\Slice n Dice\Slice_n_Dice_Analytics_u.dfm</Transaction>
+    <Transaction>2018/06/20 08:50:29.820.pas,E:\Slice n Dice\Unit1.pas=E:\Slice n Dice\Slice_n_Dice_Inventory_u.pas</Transaction>
+    <Transaction>2018/06/20 08:50:29.820.dfm,E:\Slice n Dice\Unit1.dfm=E:\Slice n Dice\Slice_n_Dice_Inventory_u.dfm</Transaction>
+    <Transaction>2018/08/01 22:37:36.324.pas,F:\Slice n Dice\Slice_n_Dice_Edit_u.pas=</Transaction>
+    <Transaction>2018/08/01 22:37:36.324.dfm,F:\Slice n Dice\Slice_n_Dice_Edit_u.dfm=</Transaction>
+    <Transaction>2018/08/01 22:38:35.000.pas,F:\Slice n Dice\Slice_n_Dice_Add_u.pas=F:\Slice n Dice\Slice_n_Dice_Add_OR_Edit_u.pas</Transaction>
+    <Transaction>2018/08/01 22:38:35.000.dfm,F:\Slice n Dice\Slice_n_Dice_Add_u.dfm=F:\Slice n Dice\Slice_n_Dice_Add_OR_Edit_u.dfm</Transaction>
+    <Transaction>2018/08/02 10:55:40.467.pas,E:\Slice n Dice\Unit1.pas=E:\Slice n Dice\Unit_Conversions_u.pas</Transaction>
+    <Transaction>2018/08/02 10:55:40.467.dfm,E:\Slice n Dice\Unit1.dfm=E:\Slice n Dice\Unit_Conversions_u.dfm</Transaction>
+    <Transaction>2018/08/13 21:01:58.770.pas,F:\Slice n Dice\Unit1.pas=F:\Slice n Dice\Add_Meal_to_Shop_List_u.pas</Transaction>
+    <Transaction>2018/08/13 21:01:58.770.dfm,F:\Slice n Dice\Unit1.dfm=F:\Slice n Dice\Add_Meal_to_Shop_List_u.dfm</Transaction>
+    <Transaction>2018/08/13 21:30:07.036.pas,F:\Slice n Dice\Unit1.pas=F:\Slice n Dice\Add_Ingredient_u.pas</Transaction>
+    <Transaction>2018/08/13 21:30:07.036.dfm,F:\Slice n Dice\Unit1.dfm=F:\Slice n Dice\Add_Ingredient_u.dfm</Transaction>
+    <Transaction>2018/08/16 07:50:55.192.pas,E:\Slice n Dice\Unit1.pas=E:\Slice n Dice\Pie_Charts_u.pas</Transaction>
+    <Transaction>2018/08/16 07:50:55.196.dfm,E:\Slice n Dice\Unit1.dfm=E:\Slice n Dice\Pie_Charts_u.dfm</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="dmSlicenDice_u.pas"/>
+    <File Path="dmSlicenDice_u.dfm"/>
+    <File Path="Slice_n_Dice_Add_OR_Edit_u.pas"/>
+    <File Path="Slice_n_Dice_Add_OR_Edit_u.dfm"/>
+    <File Path="Slice_n_Dice_Analytics_u.pas"/>
+    <File Path="Slice_n_Dice_Analytics_u.dfm"/>
+    <File Path="Slice_n_Dice_Home_u.pas"/>
+    <File Path="Slice_n_Dice_Home_u.dfm"/>
+    <File Path="Slice_n_Dice_Inventory_u.pas"/>
+    <File Path="Slice_n_Dice_Inventory_u.dfm"/>
+    <File Path="Slice_n_Dice_Splash_u.pas"/>
+    <File Path="Slice_n_Dice_Splash_u.dfm"/>
+    <File Path="Slice_n_Dice_u.pas"/>
+    <File Path="Slice_n_Dice_u.dfm"/>
+    <File Path="Slice_n_Dice_View_u.pas"/>
+    <File Path="Slice_n_Dice_View_u.dfm"/>
+    <File Path="SnDDependencies_u.pas"/>
+    <File Path="Unit_Conversions_u.pas"/>
+    <File Path="Unit_Conversions_u.dfm"/>
+    <File Path="Add_Meal_to_Shop_List_u.pas"/>
+    <File Path="Add_Meal_to_Shop_List_u.dfm"/>
+    <File Path="Add_Ingredient_u.pas"/>
+    <File Path="Add_Ingredient_u.dfm"/>
+    <File Path="Pie_Charts_u.pas"/>
+    <File Path="Pie_Charts_u.dfm"/>
+  </ProjectSortOrder>
+</BorlandProject>

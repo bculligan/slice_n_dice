@@ -1,0 +1,313 @@
+unit Slice_n_Dice_Edit_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, pngimage, ExtCtrls, jpeg, ExtDlgs, dmSlicenDice_u;
+
+type
+  TRecipeEdit = class(TForm)
+    pnlViewBase: TPanel;
+    pnlNameView: TPanel;
+    imgMeal: TImage;
+    lblServes: TLabel;
+    lblIngredients: TLabel;
+    lblIngredientName: TLabel;
+    lblIngredientQuantity: TLabel;
+    lblIngredientUnits: TLabel;
+    edtServes: TEdit;
+    btnImageUpload: TButton;
+    lbxIngredientName: TListBox;
+    lbxIngredientQuantity: TListBox;
+    lbxIngredientMeasurement: TListBox;
+    btnSave: TButton;
+    edtRecipeName: TEdit;
+    cmbxMealType: TComboBox;
+    edtIngredientName: TEdit;
+    edtIngredientQuantity: TEdit;
+    cmbxIngredientUnit: TComboBox;
+    btnAddIngredient: TButton;
+    btnDeleteIngredient: TButton;
+    pnlMethodView: TPanel;
+    lblMethodView: TLabel;
+    memMethod: TMemo;
+    btnMethodUpload: TButton;
+    pnlTimersView: TPanel;
+    lblTimerHeading: TLabel;
+    lblColon1: TLabel;
+    lblColon2: TLabel;
+    edtTimeh: TEdit;
+    btnAddTimer: TButton;
+    edtTimem: TEdit;
+    edtTimes: TEdit;
+    dlgUploadImage: TOpenPictureDialog;
+    dlgOpenTxtFile: TOpenTextFileDialog;
+    lsbTimers: TListBox;
+    btnDeleteTimer: TButton;
+    btnHome: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure edtServesClick(Sender: TObject);
+    procedure btnAddTimerClick(Sender: TObject);
+    procedure ValidateTimer;
+    procedure btnMethodUploadClick(Sender: TObject);
+    procedure btnImageUploadClick(Sender: TObject);
+    procedure btnDeleteTimerClick(Sender: TObject);
+    procedure DeleteTimer;
+    procedure AddTimer;
+    procedure lsbTimersKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+
+  private
+    { Private declarations }
+
+  var
+    iTimeh, iTimem, iTimes: Integer;
+    bTimer: boolean;
+    sTimer: string;
+  public
+    { Public declarations }
+  end;
+
+var
+  RecipeEdit: TRecipeEdit;
+  arrTimers: array of string;
+  iTimeIndex: Integer = 1;
+
+implementation
+
+procedure TRecipeEdit.AddTimer;
+var
+  I: Integer;
+begin
+  ValidateTimer;
+
+  if (bTimer = True) AND NOT(sTimer = '00:00:00') then
+  begin
+    Setlength(arrTimers, iTimeIndex);
+    arrTimers[iTimeIndex - 1] := sTimer;
+    Inc(iTimeIndex);
+    sTimer := '';
+  end;
+
+  lsbTimers.Clear;
+
+  for I := Low(arrTimers) to High(arrTimers) do
+  begin
+    lsbTimers.Items.Add(arrTimers[I]);
+  end;
+end;
+
+procedure TRecipeEdit.DeleteTimer;
+var
+  I, t: Integer;
+
+begin
+
+  if lsbTimers.ItemIndex >= 0 then
+  begin
+
+    for t := lsbTimers.ItemIndex to high(arrTimers) - 1 do
+    begin
+      arrTimers[t] := arrTimers[t + 1];
+    end;
+    Setlength(arrTimers, length(arrTimers) - 1);
+  end
+  else
+  begin
+    ShowMessage('Please select a timer to be deleted from the list of timers');
+  end;
+
+  lsbTimers.Clear;
+
+  for I := Low(arrTimers) to High(arrTimers) do
+  begin
+    lsbTimers.Items.Add(arrTimers[I]);
+  end;
+
+end;
+
+procedure TRecipeEdit.ValidateTimer;
+begin
+
+  if edtTimeh.Text = '' then // defaults blank values to 00
+    edtTimeh.Text := '00';
+
+  if edtTimem.Text = '' then
+    edtTimem.Text := '00';
+
+  if edtTimes.Text = '' then
+    edtTimes.Text := '00';
+
+  iTimeh := StrToInt(edtTimeh.Text);
+  iTimem := StrToInt(edtTimem.Text);
+  iTimes := StrToInt(edtTimes.Text);
+
+  if (iTimeh IN [1 .. 9]) AND (length(edtTimeh.Text) < 2) then // for single digit numbers that are entered as a single digit
+  begin
+    edtTimeh.Text := '0' + edtTimeh.Text; // adds a zero before the single digit
+  end
+  else if (iTimeh IN [1 .. 9]) AND (length(edtTimeh.Text) > 2) then // for single digit numbers that are entered with zeroes before the value
+  begin
+    edtTimeh.Text := edtTimeh.Text[length(edtTimeh.Text) - 1] + edtTimeh.Text
+    // takes the last two digits
+      [length(edtTimeh.Text)];
+  end;
+
+  if (iTimem IN [1 .. 9]) AND (length(edtTimem.Text) < 2) then
+  begin
+    edtTimem.Text := '0' + edtTimem.Text;
+  end
+  else if (iTimem IN [1 .. 9]) AND (length(edtTimem.Text) > 2) then
+  begin
+    edtTimem.Text := edtTimem.Text[length(edtTimem.Text) - 1] + edtTimem.Text
+      [length(edtTimem.Text)];
+  end;
+
+  if (iTimes IN [1 .. 9]) AND (length(edtTimes.Text) < 2) then
+  begin
+    edtTimes.Text := '0' + edtTimes.Text;
+  end
+  else if (iTimes IN [1 .. 9]) AND (length(edtTimes.Text) > 2) then
+  begin
+    edtTimes.Text := edtTimes.Text[length(edtTimes.Text) - 1] + edtTimes.Text
+      [length(edtTimes.Text)];
+  end;
+
+  if NOT((iTimeh IN [0 .. 99]) AND (iTimem IN [0 .. 59]) AND
+      (iTimes IN [0 .. 59])) then
+  begin
+    ShowMessage(
+      'Please make sure you have entered all time information in the format hh:mm:ss');
+    bTimer := False;
+  end
+  else
+  begin
+    sTimer := edtTimeh.Text + ':' + edtTimem.Text + ':' + edtTimes.Text;
+    bTimer := True;
+  end;
+
+end;
+{$R *.dfm}
+
+procedure TRecipeEdit.FormCreate(Sender: TObject);
+begin
+  WindowState := wsMaximized;
+  BorderStyle := bsSizeable;
+  Left := 0;
+  Top := 0;
+  Width := Screen.Width;
+  Height := Screen.Height;
+
+  pnlMethodView.Width := pnlViewBase.Width - pnlNameView.Width -
+    pnlTimersView.Width - 10; // get pnlMethodView to sit between the panel on the left and right
+  pnlMethodView.Height := pnlViewBase.Height; // correctly fit the method section to fill the middle of the screen
+
+  edtRecipeName.Left := (pnlNameView.Width - edtRecipeName.Width) DIV 2;
+  // centre recipe name
+  imgMeal.Left := (pnlNameView.Width - imgMeal.Width) DIV 2;
+  // centre meal image
+  lblIngredients.Left := (pnlNameView.Width - lblIngredients.Width) DIV 2;
+  // centre ingredients label
+
+  lblServes.Left := imgMeal.Left; // format 'serves' label under left corner of image
+  edtServes.Left := lblServes.Left + lblServes.Width + 5;
+  // formats edit to follow after the 'serves' text
+  btnImageUpload.Left := imgMeal.Left + imgMeal.Width - btnImageUpload.Width;
+  // formats update button to follow after the 'serves' edit
+
+  lbxIngredientName.Height := btnSave.Top - btnAddIngredient.Top -
+    btnAddIngredient.Height - 12; // get listboxes to sit between ingredients heading and conversion buttons
+  lbxIngredientQuantity.Height := btnSave.Top - btnAddIngredient.Top -
+    btnAddIngredient.Height - 12;
+  lbxIngredientMeasurement.Height := btnSave.Top - btnAddIngredient.Top -
+    btnAddIngredient.Height - 12;
+
+  lblIngredientName.Left := lbxIngredientName.Left;
+  // match labels to listboxes
+  lblIngredientQuantity.Left := lbxIngredientQuantity.Left;
+  lblIngredientUnits.Left := lbxIngredientMeasurement.Left;
+
+  edtIngredientName.Left := lbxIngredientName.Left; // formatting for ingredients entering components
+  edtIngredientName.Width := lbxIngredientName.Width;
+  edtIngredientQuantity.Left := lbxIngredientQuantity.Left;
+  edtIngredientQuantity.Width := lbxIngredientQuantity.Width;
+  cmbxIngredientUnit.Left := lbxIngredientMeasurement.Left;
+  cmbxIngredientUnit.Width := lbxIngredientMeasurement.Width;
+
+  btnMethodUpload.Left := memMethod.Left + memMethod.Width -
+    btnMethodUpload.Width; // set formatting of method upload button
+
+  edtTimeh.Left := (pnlTimersView.Width - edtTimeh.Width) DIV 10;
+  // centre format the timer components
+  edtTimem.Left := edtTimeh.Left + edtTimeh.Width + 13;
+  edtTimes.Left := edtTimem.Left + edtTimem.Width + 13;
+  lblColon1.Left := (edtTimem.Left + (edtTimeh.Left + edtTimeh.Width)) DIV 2;
+  // centre the colons
+  lblColon2.Left := (edtTimes.Left + (edtTimem.Left + edtTimem.Width)) DIV 2;
+  btnAddTimer.Left := (pnlTimersView.Width - btnAddTimer.Width) DIV 2;
+
+  btnDeleteTimer.Top := btnSave.Top;
+  lsbTimers.Height := btnDeleteTimer.Top -
+    (btnAddTimer.Top + btnAddTimer.Width);
+  lsbTimers.Left := (pnlTimersView.Width - lsbTimers.Width) DIV 2;
+  lsbTimers.Items.Clear;
+
+  btnHome.Left := btnMethodUpload.Left - (btnHome.Width + 5);
+
+  Setlength(arrTimers, iTimeIndex);
+
+end;
+
+procedure TRecipeEdit.lsbTimersKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    DeleteTimer;
+end;
+
+procedure TRecipeEdit.btnAddTimerClick(Sender: TObject);
+begin
+  AddTimer;
+end;
+
+procedure TRecipeEdit.btnDeleteTimerClick(Sender: TObject);
+begin
+  DeleteTimer;
+end;
+
+procedure TRecipeEdit.btnImageUploadClick(Sender: TObject);
+begin
+  if dlgUploadImage.Execute then
+    if FileExists(dlgUploadImage.FileName) then // Check file exists
+      imgMeal.Picture.LoadFromFile(dlgUploadImage.FileName)
+      // set new imgMeal image
+    else
+      raise Exception.Create('File does not exist');
+end;
+
+procedure TRecipeEdit.btnMethodUploadClick(Sender: TObject);
+var
+  sFile: String;
+
+begin
+  sFile := '';
+
+  dlgOpenTxtFile.Filter := 'Text files (*.txt)|*.TXT';
+  // limit to only view textfiles
+  if dlgOpenTxtFile.Execute then
+    sFile := dlgOpenTxtFile.FileName; // set sFile to be name of selected file.  Then open text file from sFile
+
+  if sFile <> '' then
+  begin
+    memMethod.Clear;
+    memMethod.Lines.LoadFromFile(sFile);
+  end;
+end;
+
+procedure TRecipeEdit.edtServesClick(Sender: TObject);
+begin
+  edtServes.SelectAll;
+end;
+
+end.

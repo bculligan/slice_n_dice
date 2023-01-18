@@ -1,0 +1,117 @@
+object dmSlicenDice: TdmSlicenDice
+  OldCreateOrder = False
+  OnCreate = DataModuleCreate
+  Height = 511
+  Width = 668
+  object conSlicenDice: TADOConnection
+    ConnectionString = 
+      'Provider=Microsoft.Jet.OLEDB.4.0;User ID=Admin;Data Source=Slice' +
+      'nDiceDB.mdb;Mode=ReadWrite;Persist Security Info=False;'
+    LoginPrompt = False
+    Mode = cmReadWrite
+    Provider = 'Microsoft.Jet.OLEDB.4.0'
+    Left = 72
+    Top = 88
+  end
+  object tblIngredient: TADOTable
+    Connection = conSlicenDice
+    CursorType = ctStatic
+    TableName = 'tblIngredient'
+    Left = 160
+    Top = 88
+  end
+  object dsrIngredient: TDataSource
+    DataSet = tblIngredient
+    Left = 160
+    Top = 152
+  end
+  object tblRecipe: TADOTable
+    Connection = conSlicenDice
+    CursorType = ctStatic
+    TableName = 'tblRecipe'
+    Left = 248
+    Top = 88
+  end
+  object dsrRecipe: TDataSource
+    DataSet = tblRecipe
+    Left = 248
+    Top = 152
+  end
+  object tblRecipeIngredientNeed: TADOTable
+    Connection = conSlicenDice
+    CursorType = ctStatic
+    TableName = 'tblRecipeIngredientNeed'
+    Left = 344
+    Top = 88
+  end
+  object dsrRecipeIngredientNeed: TDataSource
+    DataSet = tblRecipeIngredientNeed
+    Left = 344
+    Top = 152
+  end
+  object tblTrack: TADOTable
+    Connection = conSlicenDice
+    CursorType = ctStatic
+    TableName = 'tblTrack'
+    Left = 432
+    Top = 88
+  end
+  object dsrTrack: TDataSource
+    DataSet = tblTrack
+    Left = 432
+    Top = 152
+  end
+  object dsrIngredientsNeeded: TDataSource
+    DataSet = qryIngredientsNeeded
+    Left = 520
+    Top = 152
+  end
+  object qryIngredientsNeeded: TADOQuery
+    Connection = conSlicenDice
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM tblRecipe')
+    Left = 520
+    Top = 88
+  end
+  object qryAnalytics: TADOQuery
+    Connection = conSlicenDice
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM tblRecipe')
+    Left = 608
+    Top = 88
+  end
+  object dsrAnalytics: TDataSource
+    DataSet = qryAnalytics
+    Left = 608
+    Top = 152
+  end
+  object tblRecipePreview: TADOTable
+    Connection = conSlicenDice
+    CursorType = ctStatic
+    TableName = 'tblRecipe'
+    Left = 248
+    Top = 216
+  end
+  object dsrRecipePreview: TDataSource
+    DataSet = tblRecipePreview
+    Left = 248
+    Top = 280
+  end
+  object dsrRecipeSearch: TDataSource
+    DataSet = qryRecipeSearch
+    Left = 520
+    Top = 280
+  end
+  object qryRecipeSearch: TADOQuery
+    Connection = conSlicenDice
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM tblRecipe')
+    Left = 520
+    Top = 216
+  end
+end

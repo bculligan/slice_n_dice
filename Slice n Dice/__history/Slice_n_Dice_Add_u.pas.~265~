@@ -1,0 +1,191 @@
+unit Slice_n_Dice_Add_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, jpeg, ExtCtrls, pngimage, ExtDlgs, SnDDependencies_u,
+  dmSlicenDice_u;
+
+type
+  TAddRecipe = class(TForm)
+    pnlViewBase: TPanel;
+    pnlMethodView: TPanel;
+    lblMethod: TLabel;
+    memMethod: TMemo;
+    pnlIngredients: TPanel;
+    lblIngredients: TLabel;
+    lbxIngredients: TListBox;
+    pnlLogo: TPanel;
+    btnBack: TButton;
+    btnSaveMeal: TButton;
+    pnlInfoANDImage: TPanel;
+    imgMeal: TImage;
+    edtName: TEdit;
+    btnAddIng: TButton;
+    btnDeleteIng: TButton;
+    btnImgUpload: TButton;
+    btnMethodUpload: TButton;
+    btnIngredientsUpload: TButton;
+    lbledtServe: TLabeledEdit;
+    lbledtCookTime: TLabeledEdit;
+    lbledtTimer: TLabeledEdit;
+    cmbxMealType: TComboBox;
+    imgColour1: TImage;
+    imgColour2: TImage;
+    imgColour3: TImage;
+    imgColour4: TImage;
+    imgColour5: TImage;
+    imgColour6: TImage;
+    dlgOpenTxtFile: TOpenTextFileDialog;
+    dlgUploadImage: TOpenPictureDialog;
+    lblRecType: TLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure memMethodClick(Sender: TObject);
+    procedure btnBackClick(Sender: TObject);
+    procedure btnMethodUploadClick(Sender: TObject);
+    procedure btnImgUploadClick(Sender: TObject);
+
+  private
+    { Private declarations }
+  var
+    dynLogoIMG: TImage;
+  public
+    { Public declarations }
+
+  end;
+
+var
+  AddRecipe: TAddRecipe;
+
+implementation
+
+uses
+  Slice_n_Dice_u;
+{$R *.dfm}
+
+procedure TAddRecipe.btnBackClick(Sender: TObject);
+var
+  iSelect: integer;
+
+begin
+  iSelect := messagedlg(
+    'Are you sure you want to go back?  No data will be saved if you proceed unless you have clicked the save button', mtConfirmation, mbOKCancel, 0);
+
+  if iSelect = mrOK then
+    Close;
+end;
+
+procedure TAddRecipe.btnImgUploadClick(Sender: TObject);
+begin
+  if dlgUploadImage.Execute then
+    if FileExists(dlgUploadImage.FileName) then // Check file exists
+      imgMeal.Picture.LoadFromFile(dlgUploadImage.FileName)
+      // set new imgMeal image
+    else
+      raise Exception.Create('File does not exist');
+end;
+
+procedure TAddRecipe.btnMethodUploadClick(Sender: TObject);
+var
+  sFile: String;
+
+begin
+  sFile := '';
+
+  dlgOpenTxtFile.Filter := 'Text files (*.txt)|*.TXT';
+  // limit to only view textfiles
+  if dlgOpenTxtFile.Execute then
+    sFile := dlgOpenTxtFile.FileName; // set sFile to be name of selected file.  Then open text file from sFile
+
+  if sFile <> '' then
+  begin
+    memMethod.Clear;
+    memMethod.Lines.LoadFromFile(sFile);
+  end;
+end;
+
+procedure TAddRecipe.FormCreate(Sender: TObject);
+begin
+  WindowState := wsMaximized;
+  BorderStyle := bsSizeable;
+  Left := 0;
+  Top := 0;
+  Width := Screen.Width;
+  Height := Screen.Height;
+
+  cmbxMealType.Text := SnDRecipes.objDependencies.GetMealType;
+
+  pnlMethodView.Width := pnlIngredients.Left -
+    (pnlInfoANDImage.Left + pnlInfoANDImage.Width);
+  edtName.Left := pnlInfoANDImage.Left + pnlInfoANDImage.Width + 5;
+  edtName.Width := memMethod.Width;
+  lblIngredients.Left := (pnlIngredients.Width div 2)
+    - lblIngredients.Width div 2;
+
+  imgColour1.Height := pnlInfoANDImage.Width DIV 4;
+  imgColour1.Width := imgColour1.Height;
+  imgColour2.Height := imgColour1.Height;
+  imgColour2.Width := imgColour1.Height;
+  imgColour3.Height := imgColour1.Height;
+  imgColour3.Width := imgColour1.Height;
+  imgColour4.Height := imgColour1.Height;
+  imgColour4.Width := imgColour1.Height;
+  imgColour5.Height := imgColour1.Height;
+  imgColour5.Width := imgColour1.Height;
+  imgColour6.Height := imgColour1.Height;
+  imgColour6.Width := imgColour1.Height;
+  imgColour1.Top := pnlInfoANDImage.Height - 6 - imgColour1.Height;
+  imgColour4.Top := imgColour1.Top;
+  imgColour6.Top := imgColour1.Top;
+  imgColour2.Top := imgColour1.Top - imgColour2.Height;
+  imgColour3.Top := imgColour2.Top - imgColour3.Height;
+  imgColour5.Top := imgColour2.Top;
+  imgColour4.Left := imgColour1.Left + imgColour1.Width;
+  imgColour5.Left := imgColour4.Left;
+  imgColour6.Left := imgColour4.Left + imgColour4.Width;
+
+  btnMethodUpload.Top := ((imgColour3.Top + (imgMeal.Top + imgMeal.Height))
+      - btnMethodUpload.Height) DIV 2;
+  btnImgUpload.Top := btnMethodUpload.Top - 35 - btnImgUpload.Height;
+  btnIngredientsUpload.Top := btnMethodUpload.Top + btnMethodUpload.Height + 35;
+  lbledtServe.Top := btnImgUpload.Top + 1;
+  lbledtCookTime.Top := btnMethodUpload.Top + 1;
+  lbledtTimer.Top := btnIngredientsUpload.Top + 1;
+  lbledtServe.Left :=
+    ((pnlInfoANDImage.Width + btnImgUpload.Left +
+        btnImgUpload.Width) - lbledtServe.Width) DIV 2;
+  lbledtCookTime.Left :=
+    ((pnlInfoANDImage.Width + btnImgUpload.Left + btnImgUpload.Width)
+      - lbledtCookTime.Width) DIV 2;
+  lbledtTimer.Left :=
+    ((pnlInfoANDImage.Width + btnImgUpload.Left +
+        btnImgUpload.Width) - lbledtTimer.Width) DIV 2;
+  cmbxMealType.Top := btnIngredientsUpload.Top + btnIngredientsUpload.Height +
+    36;
+  cmbxMealType.Left :=
+    ((pnlInfoANDImage.Width + btnImgUpload.Left + btnImgUpload.Width)
+      - cmbxMealType.Width) DIV 2;
+  lblRecType.Top := cmbxMealType.Top - lblRecType.Height - 2;
+  lblRecType.Left := cmbxMealType.Left;
+  lblRecType.Width := cmbxMealType.Width;
+
+  dynLogoIMG := TImage.Create(Self); // Create logo image to display
+  dynLogoIMG.Parent := pnlLogo;
+  dynLogoIMG.Name := 'imgLogo';
+  dynLogoIMG.Height := pnlLogo.Height;
+  dynLogoIMG.Width := pnlLogo.Width;
+  dynLogoIMG.Left := pnlLogo.Left;
+  dynLogoIMG.Top := pnlLogo.Top;
+  dynLogoIMG.Picture.LoadFromFile('TimerReplace.png');
+
+end;
+
+procedure TAddRecipe.memMethodClick(Sender: TObject);
+begin
+  memMethod.Lines.Clear;
+end;
+
+end.
+
+// edtRecipeName.Left := (pnlNameView.Width - edtRecipeName.Width) DIV 2;

@@ -1,0 +1,52 @@
+unit Add_Ingredient_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, StdCtrls, pngimage;
+
+type
+  TAddIngredient = class(TForm)
+    lbledtIngName: TLabeledEdit;
+    cmbxIngType: TComboBox;
+    btnAddIngredient: TButton;
+    lblIngType: TLabel;
+    lblNote: TLabel;
+    imgLogo: TImage;
+    procedure lbledtIngNameChange(Sender: TObject);
+    procedure cmbxIngTypeChange(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  AddIngredient: TAddIngredient;
+
+implementation
+
+{$R *.dfm}
+
+procedure TAddIngredient.cmbxIngTypeChange(Sender: TObject);
+begin
+  if (lbledtIngName.Text <> '') AND (cmbxIngType.ItemIndex > -1) then
+  begin
+    btnAddIngredient.Enabled := True;
+  end
+  else
+    btnAddIngredient.Enabled := False;
+end;
+
+procedure TAddIngredient.lbledtIngNameChange(Sender: TObject);
+begin
+  if (lbledtIngName.Text <> '') AND (cmbxIngType.ItemIndex > -1) then
+  begin
+    btnAddIngredient.Enabled := True;
+  end
+  else
+    btnAddIngredient.Enabled := False;
+end;
+
+end.

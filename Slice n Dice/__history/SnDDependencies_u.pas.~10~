@@ -1,0 +1,43 @@
+unit SnDDependencies_u;
+
+interface
+
+uses
+  Sysutils;
+
+type
+
+  TDependencies = Class(TObject)
+  private
+    SelectedID : string;
+
+
+  public
+    constructor Create;
+    procedure SetSelectedID(pID : String);
+    function GetSelectedID : string;
+
+
+  End;
+
+implementation
+
+constructor TDependencies.Create;
+begin
+  SelectedID := '';
+end;
+
+
+function TDependencies.GetSelectedID: string;
+begin
+  result := SelectedID;
+end;
+
+
+procedure TDependencies.SetSelectedID(pID: String);
+begin
+  SelectedID := pID;
+end;
+
+
+end.
