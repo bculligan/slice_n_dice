@@ -12,7 +12,7 @@ to the dietary goals you have set for yourself.
 
 ## Additional Notes
 
-The application was coded on an old Delphi IDE, so although the structure is less than pleasant, there are no plans to fix the structure or any other issues that the code my possess. 
-This only opens the possibility of breaking various things, and without the IDE, it would be cumbersome to test when the project is only saved as an archive of my previous work and first full desktop application. 
+The application was coded on an old Delphi IDE I can no longer access; so although the structure is less than pleasant, there are no plans to fix the structure or any other issues that the code may possess. 
+This only opens the possibility of breaking various things, and without the IDE, it would be cumbersome to test when the project is only saved here as an archive of my previous work and first full desktop application. 
 
 This application helped me win the IT award at SACS, achieved 100% for the capstone project, and resulted in matriculating with 97% for IT.
